@@ -164,22 +164,18 @@ private:
         if (!z->left) {
             x = z->right;
             transplant(m_root, z, z->right);
-            update_upward((x ? x : (y ? y->parent : nullptr)));
+            update_upward((x ? x : y->parent));
         } else if (!z->right) {
             x = z->left;
             transplant(m_root, z, z->left);
-            update_upward((x ? x : (y ? y->parent : nullptr)));
+            update_upward((x ? x : y->parent));
         } else {
             y = find_min(z->right);
             y_orig_color = y->color;
             x = y->right;
-            if (y->parent == z) {
-                if (x) x->parent = y;
-            } else {
+            if (y->parent != z) {
                 transplant(m_root, y, y->right);
-                if (y->parent) {
-                    update_upward(y->parent);
-                }
+                update_upward(y->parent);
                 y->right = z->right;
                 if (y->right) y->right->parent = y;
             }

@@ -57,7 +57,6 @@ private:
         x->parent = y;
         update(x);
         update(y);
-        update_upward(y->parent);
     }
 
     void right_rotate(Node* &root, Node* y) {
@@ -72,7 +71,6 @@ private:
         y->parent = x;
         update(y);
         update(x);
-        update_upward(x->parent);
     }
 
     void insert_fixup(Node* &root, Node* z) {
@@ -166,9 +164,11 @@ private:
         if (!z->left) {
             x = z->right;
             transplant(m_root, z, z->right);
+            update_upward((x ? x : (y ? y->parent : nullptr)));
         } else if (!z->right) {
             x = z->left;
             transplant(m_root, z, z->left);
+            update_upward((x ? x : (y ? y->parent : nullptr)));
         } else {
             y = find_min(z->right);
             y_orig_color = y->color;
@@ -191,7 +191,6 @@ private:
         }
         delete z;
         if (y_orig_color == BLACK) erase_fixup(m_root, x, (x ? x->parent : nullptr));
-        update_upward((x ? x : (y ? y->parent : nullptr)));
     }
 
     void erase_fixup(Node* &root, Node* x, Node* parent) {
@@ -327,7 +326,6 @@ public:
         Node* z = nullptr;
         m_root = bst_insert_with_ptr(m_root, key, nullptr, z);
         if (z) insert_fixup(m_root, z);
-        update_upward(z);
     }
     void erase(const KeyType& key) {
         erase_impl(key);

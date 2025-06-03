@@ -173,9 +173,10 @@ private:
             y = find_min(z->right);
             y_orig_color = y->color;
             x = y->right;
+            Node* toUpdate = y;
             if (y->parent != z) {
                 transplant(m_root, y, y->right);
-                update_upward(y->parent);
+                toUpdate = y->parent;
                 y->right = z->right;
                 if (y->right) y->right->parent = y;
             }
@@ -183,7 +184,7 @@ private:
             y->left = z->left;
             if (y->left) y->left->parent = y;
             y->color = z->color;
-            update_upward(y);
+            update_upward(toUpdate);
         }
         delete z;
         if (y_orig_color == BLACK) erase_fixup(m_root, x, (x ? x->parent : nullptr));
